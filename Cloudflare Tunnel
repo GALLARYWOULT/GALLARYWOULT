@@ -1,0 +1,4 @@
+!git clone https://github.com/yourname/project
+!pip install -r requirements.txt
+!ngrok authtoken YOUR_KEY
+!python app.py

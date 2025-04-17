@@ -1,0 +1,1 @@
+This is a placeholder for SocialShares/index.js

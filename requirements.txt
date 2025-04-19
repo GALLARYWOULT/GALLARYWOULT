@@ -1,0 +1,8 @@
+flask
+openai
+fastapi
+uvicorn
+requests
+python-dotenv
+cryptography
+google-api-python-client

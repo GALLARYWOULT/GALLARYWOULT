@@ -1,8 +1,5 @@
-flask
-openai
 fastapi
+flask
 uvicorn
-requests
-python-dotenv
-cryptography
+openai
 google-api-python-client

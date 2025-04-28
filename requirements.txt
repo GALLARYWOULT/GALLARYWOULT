@@ -3,5 +3,4 @@ flask
 uvicorn
 openai
 google-api-python-client
-openai==x.x.x
-flask==x.x.x
+openai==1.76.0

@@ -1,14 +1,26 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, Request, UploadFile, File
+from fastapi.responses import HTMLResponse, StreamingResponse
+from fastapi.templating import Jinja2Templates
+import io
 from ai_tools.text_ai import summarize_text
 from ai_tools.image_ai import blur_image
-from fastapi.responses import StreamingResponse
-import io
 
 app = FastAPI()
 
-@app.get("/")
-def root():
-    return {"msg": "GALLARY WOULT AI TOOLS LIVE 🔥"}
+# Set templates folder path
+templates = Jinja2Templates(directory=".")
+
+@app.get("/", response_class=HTMLResponse)
+async def home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/dashboard", response_class=HTMLResponse)
+async def dashboard(request: Request):
+    return templates.TemplateResponse("dashboard.html", {"request": request})
+
+@app.get("/login", response_class=HTMLResponse)
+async def login(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
 
 @app.post("/ai/summarize")
 def ai_summarize(text: str):

@@ -1,8 +1,7 @@
 fastapi
-flask
 uvicorn
-openai
-google-api-python-client
-openai==1.76.0
-uvicorn
-openai
+pillow
+transformers
+diffusers
+torch
+sentence-transformers

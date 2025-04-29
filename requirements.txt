@@ -6,3 +6,4 @@ diffusers
 torch
 sentence-transformers
 python-multipart
+jinja2

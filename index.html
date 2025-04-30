@@ -1,42 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GALLARYWOULT</title>
-    <link rel="stylesheet" href="/static/styles.css"> <!-- Agar CSS use karna ho -->
-    <script src="/static/scripts.js" defer></script> <!-- Agar JavaScript use karna ho -->
-</head>
-<body>
-    <header>
-        <h1>Welcome to GALLARYWOULT</h1>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/dashboard">Dashboard</a></li>
-                <li><a href="/login">Login</a></li>
-            </ul>
-        </nav>
-    </header>
+from fastapi import FastAPI, Request, UploadFile, File
+from fastapi.responses import HTMLResponse, StreamingResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+import io
+from ai_tools.text_ai import summarize_text
+from ai_tools.image_ai import blur_image
 
-    <main>
-        <section>
-            <h2>About GALLARYWOULT</h2>
-            <p>GALLARYWOULT ek platform hai jo aapko AI-based tools aur social networking features provide karta hai. Aap yahan apne content ko share kar sakte ho aur AI tools ka use kar sakte ho.</p>
-        </section>
+app = FastAPI()
 
-        <section>
-            <h2>Features</h2>
-            <ul>
-                <li>AI Text Summarization</li>
-                <li>AI Image Editing</li>
-                <li>Cloud File Sharing</li>
-            </ul>
-        </section>
-    </main>
+# ✅ Mount static folder for CSS and JS
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
-    <footer>
-        <p>&copy; 2025 GALLARYWOULT. All rights reserved.</p>
-    </footer>
-</body>
-</html>
+# Templates folder
+templates = Jinja2Templates(directory=".")
+
+@app.get("/", response_class=HTMLResponse)
+async def home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/dashboard", response_class=HTMLResponse)
+async def dashboard(request: Request):
+    return templates.TemplateResponse("dashboard.html", {"request": request})
+
+@app.get("/login", response_class=HTMLResponse)
+async def login(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
+
+@app.post("/ai/summarize")
+def ai_summarize(text: str):
+    summary = summarize_text(text)
+    return {"summary": summary}
+
+@app.post("/ai/blur-image")
+def blur_uploaded_image(file: UploadFile = File(...)):
+    image_data = blur_image(file.file.read())
+    return StreamingResponse(io.BytesIO(image_data), media_type="image/png")

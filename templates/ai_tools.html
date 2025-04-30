@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Tools</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <h1>AI Tools</h1>
+
+    <section>
+        <h2>Text Summarizer</h2>
+        <form id="summaryForm">
+            <textarea name="text" rows="6" cols="50" placeholder="Paste your text here..."></textarea><br>
+            <button type="submit">Summarize</button>
+        </form>
+        <p id="summaryOutput"></p>
+    </section>
+
+    <section>
+        <h2>Image Blur</h2>
+        <form id="blurForm" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*"><br>
+            <button type="submit">Blur Image</button>
+        </form>
+        <img id="blurredImage" style="max-width: 300px; display: none;">
+    </section>
+
+    <script>
+        document.getElementById("summaryForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const text = form.text.value;
+
+            const res = await fetch("/ai/summarize", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams({ text }),
+            });
+
+            const data = await res.json();
+            document.getElementById("summaryOutput").innerText = "Summary: " + data.summary;
+        });
+
+        document.getElementById("blurForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+
+            const res = await fetch("/ai/blur-image", {
+                method: "POST",
+                body: formData,
+            });
+
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const img = document.getElementById("blurredImage");
+            img.src = url;
+            img.style.display = "block";
+        });
+    </script>
+</body>
+</html>
